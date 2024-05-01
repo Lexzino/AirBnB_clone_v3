@@ -12,9 +12,9 @@ from models.review import Review
 from models.state import State
 from models.user import User
 from os import getenv
-import sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+import sqlalchemy # type: ignore
+from sqlalchemy import create_engine # type: ignore
+from sqlalchemy.orm import scoped_session, sessionmaker # type: ignore
 
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -51,23 +51,6 @@ class DBStorage:
                     new_dict[key] = obj
         return (new_dict)
 
-    def get(self, cls, id):
-        """Retrieve one object."""
-        if cls and id:
-            key = "{}.{}".format(cls.__name__, id)
-            return self.__session.query(cls).filter(cls.id == id).first()
-        return None
-
-    def count(self, cls=None):
-        """Count the number of objects in storage."""
-        if cls:
-            return len(self.all(cls))
-        else:
-            count = 0
-            for model_cls in classes.values():
-                count += len(self.all(model_cls))
-            return count
-
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)
@@ -91,3 +74,28 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
+
+    def get(self, cls, id):
+        """ retrieve one object based on class and id """
+        if type(cls) is str:
+            if cls in classes:
+                cls = classes.get(cls)
+            else:
+                return None
+        q = self.__session.query(cls).filter_by(id=id).first()
+        return q
+
+    def count(self, cls=None):
+        """ count number of objects in storage with an optional class """
+
+        if cls is None:
+            final_count = 0
+            for c in classes.values():
+                final_count += self.__session.query(c).count()
+            return final_count
+        if type(cls) is str:
+            if cls in classes:
+                cls = classes.get(cls)
+            else:
+                return None
+        return self.__session.query(cls).count()
