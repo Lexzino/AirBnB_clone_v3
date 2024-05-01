@@ -8,8 +8,8 @@ import json
 import models
 from uuid import uuid4, UUID
 from datetime import datetime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy.ext.declarative import declarative_base # type: ignore
+from sqlalchemy import Column, Integer, String, Float, DateTime # type: ignore
 
 storage_type = os.environ.get('HBNB_TYPE_STORAGE')
 
