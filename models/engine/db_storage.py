@@ -12,9 +12,9 @@ from models.review import Review
 from models.state import State
 from models.user import User
 from os import getenv
-import sqlalchemy # type: ignore
-from sqlalchemy import create_engine # type: ignore
-from sqlalchemy.orm import scoped_session, sessionmaker # type: ignore
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker 
 
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
