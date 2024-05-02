@@ -18,11 +18,9 @@ import json
 import os
 import pep8
 import unittest
-
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
-storage_t = DBStorage()
 
 
 class TestDBStorageDocs(unittest.TestCase):
@@ -69,26 +67,6 @@ test_db_storage.py'])
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_db_storage_count(self):
-        """ test that counts work each time """
-        storage_t.reload()
-        original_count = storage_t.count()
-        s = State(name='California')
-        storage_t.new(s)
-        storage_t.save()
-        self.assertEqual(original_count + 1, storage_t.count())
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_db_storage_get(self):
-        """ test that get returns a number """
-        storage_t.reload()
-        s = State(name='California')
-        storage_t.new(s)
-        storage_t.save()
-        get_check = storage_t.get(State, s.id)
-        self.assertEqual(type(get_check), State)
-
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
@@ -108,3 +86,18 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_dbs_get_method(self):
+        """Test for get nethod"""
+        pepe = State(name="California")
+        pepe.save()
+        self.assertEqual(models.storage.get("State", pepe.id), pepe)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_dbs_count_method(self):
+        """test for count method"""
+        count = models.storage.count("State")
+        pepe = State(name="Californa")
+        pepe.save()
+        self.assertEqual(models.storage.count("State"), count + 

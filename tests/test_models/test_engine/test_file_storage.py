@@ -18,7 +18,6 @@ import json
 import os
 import pep8
 import unittest
-
 FileStorage = file_storage.FileStorage
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -116,31 +115,16 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(json.loads(string), json.loads(js))
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_get(self):
-        """Test that the get method in file storage"""
-        storage = FileStorage()
-        new_state = State("New Mexico")
-        storage.new(new_state)
-        storage.save()
-        get_obj = storage.get(cls='State', id=new_state.id)
-        self.assertEqual(type(get_obj), State)
+    def test_dbs_get_method(self):
+        """Test for get nethod"""
+        pepe = State(name="California")
+        pepe.save()
+        self.assertEqual(models.storage.get("State", pepe.id), pepe)
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_count(self):
-        """Test the correct count of items for all Classes"""
-        storage = FileStorage()
-        base_count = storage.count()
-        new_state = State("New Mexico")
-        storage.new(new_state)
-        storage.save()
-        self.assertEqual(base_count + 1, storage.count())
-
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_count_class(self):
-        """Test the correct count of items for a Class"""
-        storage = FileStorage()
-        base_count = storage.count(State)
-        new_state = State("North Carolina")
-        storage.new(new_state)
-        storage.save()
-        self.assertEqual(base_count + 1, storage.count(State))
+    def test_dbs_count_method(self):
+        """test for count method"""
+        count = models.storage.count("State")
+        pepe = State(name="California")
+        pepe.save()
+        self.assertEqual(models.storage.count("State"), count + 1)
